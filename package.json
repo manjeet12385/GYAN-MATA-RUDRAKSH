@@ -1,0 +1,16 @@
+{
+  "name": "gyan-mala-rudraksh",
+  "version": "1.0.0",
+  "description": "Rudralife (रुद्राक्ष) - Official Website Replica",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "rudraksha",
+    "rudralife"
+  ],
+  "author": "",
+  "license": "ISC"
+}

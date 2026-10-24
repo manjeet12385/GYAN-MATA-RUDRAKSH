@@ -267,6 +267,153 @@
   }
 
   // ==========================================================================
+  // MOST SELLING PRODUCTS - ONE BY ONE SLIDING CAROUSEL
+  // ==========================================================================
+  function initMostSellingSlider() {
+    const track = document.getElementById('msCarouselTrack');
+    const wrapper = document.getElementById('msCarouselWrapper');
+    const prevBtn = document.getElementById('msPrevBtn');
+    const nextBtn = document.getElementById('msNextBtn');
+    const dotsWrap = document.getElementById('msDotsWrap');
+
+    if (!track || !wrapper) return;
+
+    const cards = track.querySelectorAll('.ms-slide-card');
+    const totalCards = cards.length;
+    if (totalCards === 0) return;
+
+    let currentIndex = 0;
+    let autoTimer = null;
+    const AUTO_INTERVAL = 3400; // Slide every 3.4 seconds
+
+    function getVisibleCount() {
+      if (window.innerWidth <= 991) return 2;
+      return 3;
+    }
+
+    function getMaxIndex() {
+      const visible = getVisibleCount();
+      return Math.max(0, totalCards - visible);
+    }
+
+    function updateSlider() {
+      const maxIdx = getMaxIndex();
+      if (currentIndex > maxIdx) currentIndex = 0;
+      if (currentIndex < 0) currentIndex = maxIdx;
+
+      const card = cards[0];
+      if (!card) return;
+      const cardRect = card.getBoundingClientRect();
+      const gap = window.innerWidth <= 540 ? 12 : (window.innerWidth <= 991 ? 16 : 20);
+      const slideAmount = (cardRect.width + gap) * currentIndex;
+
+      track.style.transform = `translateX(-${slideAmount}px)`;
+
+      if (dotsWrap) {
+        const dots = dotsWrap.querySelectorAll('.ms-dot');
+        dots.forEach((dot, idx) => {
+          dot.classList.toggle('active', idx === currentIndex);
+        });
+      }
+    }
+
+    function renderDots() {
+      if (!dotsWrap) return;
+      dotsWrap.innerHTML = '';
+      const maxIdx = getMaxIndex();
+      for (let i = 0; i <= maxIdx; i++) {
+        const dot = document.createElement('button');
+        dot.className = `ms-dot ${i === currentIndex ? 'active' : ''}`;
+        dot.setAttribute('aria-label', `Slide to product ${i + 1}`);
+        dot.addEventListener('click', () => {
+          currentIndex = i;
+          updateSlider();
+          resetTimer();
+        });
+        dotsWrap.appendChild(dot);
+      }
+    }
+
+    function slideNext() {
+      const maxIdx = getMaxIndex();
+      if (currentIndex >= maxIdx) {
+        currentIndex = 0;
+      } else {
+        currentIndex++;
+      }
+      updateSlider();
+    }
+
+    function slidePrev() {
+      const maxIdx = getMaxIndex();
+      if (currentIndex <= 0) {
+        currentIndex = maxIdx;
+      } else {
+        currentIndex--;
+      }
+      updateSlider();
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        slideNext();
+        resetTimer();
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        slidePrev();
+        resetTimer();
+      });
+    }
+
+    function startTimer() {
+      stopTimer();
+      autoTimer = setInterval(slideNext, AUTO_INTERVAL);
+    }
+
+    function stopTimer() {
+      if (autoTimer) clearInterval(autoTimer);
+    }
+
+    function resetTimer() {
+      stopTimer();
+      startTimer();
+    }
+
+    wrapper.addEventListener('mouseenter', stopTimer);
+    wrapper.addEventListener('mouseleave', startTimer);
+
+    // Touch swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    wrapper.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      stopTimer();
+    }, { passive: true });
+
+    wrapper.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 35) {
+        slideNext();
+      } else if (touchEndX - touchStartX > 35) {
+        slidePrev();
+      }
+      startTimer();
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      renderDots();
+      updateSlider();
+    });
+
+    renderDots();
+    updateSlider();
+    startTimer();
+  }
+
+  // ==========================================================================
   // SEARCH AUTOCOMPLETE
   // ==========================================================================
   function initSearch() {
@@ -419,7 +566,7 @@
             <button class="btn-quick-view-text" onclick="window.rudraApp.openQuickViewById('${p.id}')" title="View Bead Details">
               <i class="fa-regular fa-eye"></i> Details
             </button>
-            <a href="https://wa.me/917208819922?text=${encodeURIComponent('Namaste Gyan Mala Rudraksh, I am interested in ' + p.name + '. Please share price, certificate and details.')}" target="_blank" class="btn-inquire-whatsapp" title="Inquire on WhatsApp">
+            <a href="https://wa.me/919198254020?text=${encodeURIComponent('Namaste Gyan Mala Rudraksh, I am interested in ' + p.name + '. Please share price, certificate and details.')}" target="_blank" class="btn-inquire-whatsapp" title="Inquire on WhatsApp">
               <i class="fa-brands fa-whatsapp"></i> Inquire
             </a>
           </div>
@@ -669,7 +816,7 @@
     const qvWhatsappBtn = document.getElementById('qvWhatsappBtn');
     if (qvWhatsappBtn) {
       const msg = encodeURIComponent(`Namaste Gyan Mala Rudraksh, I am interested in ${prod.name}. Please share price, certificate and details.`);
-      qvWhatsappBtn.href = `https://wa.me/917208819922?text=${msg}`;
+      qvWhatsappBtn.href = `https://wa.me/919198254020?text=${msg}`;
     }
 
     if (DOM.quickViewModal) {
@@ -834,6 +981,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     initCurrency();
     initHeroSlider();
+    initMostSellingSlider();
     initMidPromoSlider();
     initSearch();
     initFilters();

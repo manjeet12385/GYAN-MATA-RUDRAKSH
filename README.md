@@ -57,7 +57,7 @@ A complete, high-fidelity, pixel-perfect replica of [https://rudralife.com/](htt
 10. **Interactive Modals & Widgets**:
     - **Product Quick View Modal**: Full product specifications, spiritual benefits, and wearing rules.
     - **Free Consultation Booking Modal**: Schedule personalized consultations with date and concern selection.
-    - **Floating WhatsApp Chat**: Direct WhatsApp link (`+91 72088 19922`) with pre-filled greeting.
+    - **Floating WhatsApp Chat**: Direct WhatsApp link (`+91 91982 54020`) with pre-filled greeting.
     - **Floating Help Button**: Instant access to spiritual assistance.
 
 ---
